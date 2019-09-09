@@ -11,3 +11,86 @@
 		<td>20 September 2019</td>
 	</tbody>
 </table>
+
+<script>
+	// Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCVlf7cH8jhEqj0Eb2iCl21m2XcisSWfhA",
+    authDomain: "iuran-qurban.firebaseapp.com",
+    databaseURL: "https://iuran-qurban.firebaseio.com",
+    projectId: "iuran-qurban",
+    storageBucket: "",
+    messagingSenderId: "880701321295",
+    appId: "1:880701321295:web:047142a6d5cf8f298e7a3a"
+  };
+  // Initialize Firebase
+  // firebase.initializeApp(firebaseConfig);
+
+  // var database = firebase.database();
+  // var refDb = database.ref('transactions')
+  // console.log('refDb')
+
+  // $('#adding').on('click', function() {
+  //   refDb.push({
+  //     id: '<%#= current_user.id %>',
+  //     name: '<%#= current_user.email %>',
+  //     text: $('#value-msg').val(),
+  //     time: "<%#= Time.now.strftime('%D %H:%M:%S') %>",
+  //     read: false
+  //   })
+  // })
+
+  // const updateMessages = data => {
+  //   var {id, name, text, time, read} = data.val()
+  //   if (read) {
+  //     read = '';
+  //   } else {
+  //     read = 'U';
+  //   }
+
+  //   if (id != <%#= current_user.id %>) {
+  //     firebase.database().ref().child('<%#= @chat_session.provider_url %>/'+ data.key).update({read: true})
+  //     read = ''
+  //   }
+
+  //   name = (name == '<%#= current_user.email %>') ? 'You' : name
+  //   $('#messages').append('<p id="'+ data.key +'""><span>'+name+': </span><span>"'+text+'"</span><span class="read_status">'+ read +'</span></p>')
+  //   $('#value-msg').val('')
+  // }
+
+  // const changeStatus = data => {
+  //   $('#'+ data.key +' .read_status').remove()
+  // }
+
+  // function signIn(email, password){
+  //   firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+  //     var errorCode = error.code;
+  //     var errorMessage = error.message;
+  //     console.log(errorMessage)
+  //     if (errorCode === "auth/user-not-found") {
+  //       signUp(email, password)
+  //     } else {
+  //       alert(errorMessage)
+  //     }
+  //   });
+  // };
+  // function signUp(email, password){
+  //   firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+  //     var errorCode = error.code;
+  //     var errorMessage = error.message;
+  //     if (errorCode !== null || errorCode !== undefined) {
+  //       alert(errorMessage)
+  //     }
+  //   })
+  // };
+  // function signOut(){
+  //   firebase.auth().signOut()
+  // };
+
+  // refDb.on('child_added', updateMessages)
+  // refDb.on('child_changed', changeStatus)
+  // aa = []
+  // refDb.once('value', function(snapshot) {
+  //   // console.log(snapshot.val())
+  // })
+</script>
