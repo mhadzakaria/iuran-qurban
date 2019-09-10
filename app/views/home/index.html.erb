@@ -1,19 +1,61 @@
-<h1>Data Iuran</h1>
-<table>
-	<tr>
-		<th>Tanggal</th>
-		<th>Nama</th>
-		<th>Iuran</th>
-	</tr>
-	<tbody>
-		<td>Ahmad</td>
-		<td>1000000</td>
-		<td>20 September 2019</td>
-	</tbody>
-</table>
+<div class="container-fluid mt-3">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          Data Iuran
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <tr>
+              <th>Tanggal</th>
+              <th>Nama</th>
+              <th>Jumlah</th>
+            </tr>
+            <tbody class="list_iuran">
+              <!-- <tr>
+                <td>20 September 2019</td>
+                <td>Ahmad</td>
+                <td>1000000</td>
+              </tr> -->
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2"> Total </td>
+                <td id="totalIuran"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-5" style="display: none;">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          Masukan Iuran Baru
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="form-group">
+              <label for="name_input">Nama</label>
+              <input type="text" class="form-control" id="name_input" placeholder="Misal. Ahmad">
+            </div>
+            <div class="form-group">
+              <label for="jml_input">Jumlah</label>
+              <input type="number" class="form-control" id="jml_input" placeholder="Misal. 100000">
+            </div>
+            <button type="button" class="btn btn-primary" id="adding">Tambahkan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-	// Your web app's Firebase configuration
+  // Your web app's Firebase configuration
   var firebaseConfig = {
     apiKey: "AIzaSyCVlf7cH8jhEqj0Eb2iCl21m2XcisSWfhA",
     authDomain: "iuran-qurban.firebaseapp.com",
@@ -24,39 +66,40 @@
     appId: "1:880701321295:web:047142a6d5cf8f298e7a3a"
   };
   // Initialize Firebase
-  // firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(firebaseConfig);
 
-  // var database = firebase.database();
-  // var refDb = database.ref('transactions')
-  // console.log('refDb')
+  var database = firebase.database();
+  var refDb = database.ref('transactions')
 
-  // $('#adding').on('click', function() {
-  //   refDb.push({
-  //     id: '<%#= current_user.id %>',
-  //     name: '<%#= current_user.email %>',
-  //     text: $('#value-msg').val(),
-  //     time: "<%#= Time.now.strftime('%D %H:%M:%S') %>",
-  //     read: false
-  //   })
-  // })
+  $('#adding').on('click', function() {
+    database.ref('transactions/').push({
+      name: $('input#name_input').val(),
+      jumlah: $('input#jml_input').val(),
+      tanggal: "<%= Date.today.strftime('%d %B %Y') %>",
+    });
 
-  // const updateMessages = data => {
-  //   var {id, name, text, time, read} = data.val()
-  //   if (read) {
-  //     read = '';
-  //   } else {
-  //     read = 'U';
-  //   }
+    $('input#name_input').val('')
+    $('input#jml_input').val('')
+  })
 
-  //   if (id != <%#= current_user.id %>) {
-  //     firebase.database().ref().child('<%#= @chat_session.provider_url %>/'+ data.key).update({read: true})
-  //     read = ''
-  //   }
+  var totalIuran = 0
+  const updateMessages = data => {
+    var {name, jumlah, tanggal} = data.val()
+    
+    var new_element = ""
+    new_element += "<tr id="+data.key+">"
+    new_element += "<td>"+tanggal+"</td>"
+    new_element += "<td>"+name+"</td>"
+    new_element += "<td>"+jumlah+"</td>"
+    new_element += "</tr>"
 
-  //   name = (name == '<%#= current_user.email %>') ? 'You' : name
-  //   $('#messages').append('<p id="'+ data.key +'""><span>'+name+': </span><span>"'+text+'"</span><span class="read_status">'+ read +'</span></p>')
-  //   $('#value-msg').val('')
-  // }
+    $(".list_iuran").append(new_element)
+
+    if (jumlah != '') {
+      totalIuran += parseInt(jumlah)
+      $("#totalIuran").text(totalIuran)
+    }
+  }
 
   // const changeStatus = data => {
   //   $('#'+ data.key +' .read_status').remove()
@@ -87,7 +130,7 @@
   //   firebase.auth().signOut()
   // };
 
-  // refDb.on('child_added', updateMessages)
+  refDb.on('child_added', updateMessages)
   // refDb.on('child_changed', changeStatus)
   // aa = []
   // refDb.once('value', function(snapshot) {
