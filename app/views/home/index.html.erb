@@ -1,4 +1,4 @@
-<div class="container-fluid mt-3">
+<div class="container-fluid mt-3 wrapper-div" style="display: none;">
   <div class="row">
     <div class="col-md-8">
       <div class="card">
@@ -8,9 +8,9 @@
         <div class="card-body">
           <table class="table">
             <tr>
-              <th>Tanggal</th>
-              <th>Nama</th>
-              <th>Jumlah</th>
+              <th style="text-align: center;">Tanggal</th>
+              <th style="text-align: center;">Nama</th>
+              <th style="text-align: center;">Jumlah</th>
             </tr>
             <tbody class="list_iuran">
               <!-- <tr>
@@ -21,8 +21,8 @@
             </tbody>
             <tfoot>
               <tr>
-                <td colspan="2"> Total </td>
-                <td id="totalIuran"></td>
+                <th colspan="2"> Total </th>
+                <td style="text-align: right;" id="totalIuran"></td>
               </tr>
             </tfoot>
           </table>
@@ -30,7 +30,7 @@
       </div>
     </div>
   </div>
-  <div class="row mt-5" style="display: none;">
+  <div class="row mt-5" style="display: ;">
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">
@@ -83,27 +83,52 @@
   })
 
   var totalIuran = 0
-  const updateMessages = data => {
+  const updateTable = data => {
+    $('.wrapper-div').css('display', 'block')
     var {name, jumlah, tanggal} = data.val()
     
-    var new_element = ""
-    new_element += "<tr id="+data.key+">"
-    new_element += "<td>"+tanggal+"</td>"
-    new_element += "<td>"+name+"</td>"
-    new_element += "<td>"+jumlah+"</td>"
-    new_element += "</tr>"
-
-    $(".list_iuran").append(new_element)
-
     if (jumlah != '') {
+      var new_element = ""
+      new_element += "<tr id="+data.key+">"
+      new_element += "<td>"+tanggal+"</td>"
+      new_element += "<td>"+name+"</td>"
+      new_element += "<td style='text-align: right;' data-jumlah='"+jumlah+"' class='jumlah-cloumn'>Rp. "+parseInt(jumlah).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td>"
+      new_element += "</tr>"
+
+      $(".list_iuran").append(new_element)
+
       totalIuran += parseInt(jumlah)
-      $("#totalIuran").text(totalIuran)
+      $("#totalIuran").text("Rp. "+ totalIuran.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'))
     }
   }
 
-  // const changeStatus = data => {
-  //   $('#'+ data.key +' .read_status').remove()
-  // }
+  const updateRow = data => {
+    var element = $('#'+ data.key)
+    var {name, jumlah, tanggal} = data.val()
+
+    if (jumlah != '') {
+      totalIuran -= parseInt(element.find('.jumlah-cloumn').data('jumlah'))
+
+      var new_element = ""
+      new_element += "<tr id="+data.key+">"
+      new_element += "<td>"+tanggal+"</td>"
+      new_element += "<td>"+name+"</td>"
+      new_element += "<td style='text-align: right;' data-jumlah='"+jumlah+"' class='jumlah-cloumn'>Rp. "+parseInt(jumlah).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')+"</td>"
+      new_element += "</tr>"
+      totalIuran += parseInt(jumlah)
+      $("#totalIuran").text("Rp. "+ totalIuran.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'))
+      element.replaceWith(new_element)
+    }
+  };
+
+  const removeRow = data => {
+    var element = $('#'+ data.key)
+    totalIuran -= parseInt(element.find('.jumlah-cloumn').data('jumlah'))
+
+    $("#totalIuran").text("Rp. "+ totalIuran.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'))
+
+    element.remove()
+  }
 
   // function signIn(email, password){
   //   firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
@@ -130,8 +155,9 @@
   //   firebase.auth().signOut()
   // };
 
-  refDb.on('child_added', updateMessages)
-  // refDb.on('child_changed', changeStatus)
+  refDb.on('child_added', updateTable)
+  refDb.on('child_changed', updateRow)
+  refDb.on('child_removed', removeRow)
   // aa = []
   // refDb.once('value', function(snapshot) {
   //   // console.log(snapshot.val())
